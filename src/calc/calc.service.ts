@@ -61,24 +61,29 @@ export class CalcService {
        * The whole idea of the expression evaluation is derived from the fact that
        * `/` and `*` operators takes precedence over `+` and `-`.
        * So, first we have to evaluate the `/` & `*` operators, we store the `/` & `*` evaluation result back into the stack.
-       * Everything else can be stored inside a stack as a negative or positive value as it comes.
+       * Everything else can be stored inside a stack as a negative or positive integer value as it comes.
        */
       // if the current character is not a digit/number
       if (
         isNaN(+charArrayExpression[i]) ||
         i === charArrayExpression.length - 1
       ) {
-        if (operation === '+') {
-          stack.push(current);
-        } else if (operation === '-') {
-          stack.push(-current);
-        } else if (operation === '*') {
-          stack.push(stack.pop() * current);
-        } else if (operation === '/') {
-          stack.push(stack.pop() / current);
-        } else {
-          // if it does not match with any operator the expression is invalid
-          throw new BadRequestException('Invalid expression provided');
+        switch (operation) {
+          case '+':
+            stack.push(current);
+            break;
+          case '-':
+            stack.push(-current);
+            break;
+          case '*':
+            stack.push(stack.pop() * current);
+            break;
+          case '/':
+            stack.push(stack.pop() / current);
+            break;
+          default:
+            // it is an invalid expression is invalid if it's come to this
+            throw new BadRequestException('Invalid expression provided');
         }
 
         operation = charArrayExpression[i];
